@@ -1,26 +1,29 @@
-import { nanoid } from 'nanoid';
-
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux/es/exports';
-import { addContact, deletContact } from 'redux/contacts/contacts-actions';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
 import { getFilteredContacts } from 'redux/contacts/contacts-selectors';
+import * as contactsOperations from '../redux/contacts/contacts-operations';
 
 function App() {
   const dispatch = useDispatch();
   const contacts = useSelector(getFilteredContacts);
+  console.log(contacts);
 
   const formSubmit = data => {
+    console.log(data);
     if (contacts.some(({ name }) => name === data.name)) {
       alert(`${data.name} is already in contacts`);
       return;
     }
-    data.id = nanoid();
-    dispatch(addContact(data));
+
+    dispatch(contactsOperations.addContact(data));
   };
 
-  const handleDelet = id => dispatch(deletContact(id));
+  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
+
+  const handleDelet = id => dispatch(contactsOperations.deletContact(id));
 
   return (
     <div className="section">
