@@ -18,7 +18,7 @@ export const fetchContacts = () => dispatch => {
 export const deletContact = id => dispatch => {
   dispatch(contactActions.deletContactRequest());
   deletContactFromDB(id)
-    .then(() => dispatch(contactActions.deletContactSuccess()))
+    .then(({ data }) => dispatch(contactActions.deletContactSuccess(data.id)))
     .catch(error => {
       dispatch(contactActions.deletContactError());
       console.log(error.message);
@@ -27,9 +27,8 @@ export const deletContact = id => dispatch => {
 export const addContact = contact => dispatch => {
   dispatch(contactActions.addContactRequest());
   addContactToDB(contact)
-    .then(results => {
-      console.log(results);
-      dispatch(contactActions.addContactSuccess());
+    .then(({ data }) => {
+      dispatch(contactActions.addContactSuccess(data));
     })
     .catch(error => {
       dispatch(contactActions.addContactError());

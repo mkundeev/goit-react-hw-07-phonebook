@@ -5,18 +5,7 @@ export const getFilter = state => state.contacts.filter;
 
 export const getFilteredContacts = createSelector(
   [getContacts, getFilter],
-  (contacts, filter) => {
-    console.log(contacts);
-    console.log(filter);
-    contacts.filter(contact => contact.name.toLowerCase().includes(filter));
+  (items, filter) => {
+    return items.filter(contact => contact.name.toLowerCase().includes(filter));
   }
 );
-
-// export const getFilteredContacts = state => {
-//   const contacts = getContacts(state);
-//   const filter = getFilter(state);
-//   console.log(contacts);
-//   return contacts.filter(contact =>
-//     contact.name.toLowerCase().includes(filter)
-//   );
-// };

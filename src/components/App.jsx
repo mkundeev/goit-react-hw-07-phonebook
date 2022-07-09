@@ -10,9 +10,7 @@ function App() {
   const dispatch = useDispatch();
   const contacts = useSelector(getFilteredContacts);
   console.log(contacts);
-
   const formSubmit = data => {
-    console.log(data);
     if (contacts.some(({ name }) => name === data.name)) {
       alert(`${data.name} is already in contacts`);
       return;
@@ -21,7 +19,9 @@ function App() {
     dispatch(contactsOperations.addContact(data));
   };
 
-  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
+  useEffect(() => {
+    dispatch(contactsOperations.fetchContacts());
+  }, [dispatch]);
 
   const handleDelet = id => dispatch(contactsOperations.deletContact(id));
 
@@ -31,7 +31,7 @@ function App() {
       <ContactForm onSubmit={formSubmit} />
       <h2>Contacts</h2>
       <Filter />
-      {contacts && (
+      {contacts?.length > 0 && (
         <ContactList contacts={contacts} deletContact={handleDelet} />
       )}
     </div>
