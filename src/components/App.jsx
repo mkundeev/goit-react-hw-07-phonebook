@@ -4,12 +4,12 @@ import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
 import { getFilteredContacts } from 'redux/contacts/contacts-selectors';
-import * as contactsOperations from '../redux/contacts/contacts-operations';
+import * as contactsOperations from 'redux/contacts/contacts-operations';
 
 function App() {
   const dispatch = useDispatch();
   const contacts = useSelector(getFilteredContacts);
-  console.log(contacts);
+
   const formSubmit = data => {
     if (contacts.some(({ name }) => name === data.name)) {
       alert(`${data.name} is already in contacts`);
