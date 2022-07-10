@@ -1,39 +1,52 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux/es/exports';
+import { useState, useMemo } from 'react';
+import Loader from './Loader';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
-import { getFilteredContacts } from 'redux/contacts/contacts-selectors';
-import * as contactsOperations from 'redux/contacts/contacts-operations';
+import {
+  useGetContactsQuery,
+  useDeleteContactMutation,
+  useAddContactMutation,
+} from 'redux/contactsAPI';
 
 function App() {
-  const dispatch = useDispatch();
-  const contacts = useSelector(getFilteredContacts);
+  const [filter, setFilter] = useState('');
+  const { data, isFetching } = useGetContactsQuery();
+  const [deletContact] = useDeleteContactMutation();
+  const [addContact] = useAddContactMutation();
 
-  const formSubmit = data => {
-    if (contacts.some(({ name }) => name === data.name)) {
-      alert(`${data.name} is already in contacts`);
+  const formSubmit = contact => {
+    if (data.some(({ name }) => name === contact.name)) {
+      alert(`${contact.name} is already in contacts`);
       return;
     }
-
-    dispatch(contactsOperations.addContact(data));
+    addContact(contact);
   };
 
-  useEffect(() => {
-    dispatch(contactsOperations.fetchContacts());
-  }, [dispatch]);
+  const handleDelet = id => deletContact(id);
 
-  const handleDelet = id => dispatch(contactsOperations.deletContact(id));
+  const filteredContacts = useMemo(() => {
+    if (!data) {
+      return;
+    }
+    const normilizedFilter = filter.toLowerCase();
+    return data.filter(contact =>
+      contact.name.toLowerCase().includes(normilizedFilter)
+    );
+  }, [data, filter]);
 
   return (
     <div className="section">
       <h1>Phonebook</h1>
       <ContactForm onSubmit={formSubmit} />
       <h2>Contacts</h2>
-      <Filter />
-      {contacts?.length > 0 && (
-        <ContactList contacts={contacts} deletContact={handleDelet} />
-      )}
+      <Filter changeFilter={setFilter} />
+      <div style={{ position: 'relative' }}>
+        {filteredContacts?.length > 0 && (
+          <ContactList contacts={filteredContacts} deletContact={handleDelet} />
+        )}
+        {isFetching && <Loader />}
+      </div>
     </div>
   );
 }
