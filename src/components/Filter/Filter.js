@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import s from './Filter.module.css';
 
-function Filter({ changeFilter }) {
+export default function Filter({ changeFilter }) {
   return (
     <div className={s.filter}>
       <label htmlFor="filter" className={s.title}>
@@ -16,4 +17,6 @@ function Filter({ changeFilter }) {
   );
 }
 
-export default Filter;
+Filter.propTypes = {
+  changeFilter: PropTypes.func.isRequired,
+};
